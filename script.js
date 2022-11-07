@@ -10,54 +10,59 @@
 
 let secretNumber = Math.trunc(Math.random() * 20) + 1;
 let score = 20;
+let highScore = 0;
 
+const displayMessage = message =>
+  (document.querySelector('.message').textContent = message);
+const displayScore = score =>
+  (document.querySelector('.score').textContent = score);
+const displayNumber = number =>
+  (document.querySelector('.number').textContent = number);
+const styleColorWidth = function (color, width) {
+  document.querySelector('body').style.backgroundColor = color;
+  document.querySelector('.number').style.width = width;
+};
+
+// Check functionality
 document.querySelector('.check').addEventListener('click', function () {
   const guess = Number(document.querySelector('.guess').value);
 
   //   When there is no input
   if (!guess) {
-    document.querySelector('.message').textContent = '⛔ No number!';
+    displayMessage('⛔ No number!');
 
     // When player wins
   } else if (guess === secretNumber) {
-    document.querySelector('.number').textContent = secretNumber;
-    document.querySelector('.message').textContent = '🎉Correct Number!';
-    document.querySelector('body').style.backgroundColor = '#60b347';
+    displayNumber(secretNumber);
+    displayMessage('🎉Correct Number!');
+    styleColorWidth('#60b347', '30rem');
 
-    document.querySelector('.number').style.width = '30rem';
-
-    // When input is higher
-  } else if (guess > secretNumber) {
-    if (score > 1) {
-      document.querySelector('.message').textContent = 'Too high!';
-      score--;
-      document.querySelector('.score').textContent = score;
-    } else {
-      document.querySelector('.message').textContent = 'You lost the game!';
-      document.querySelector('.score').textContent = 0;
+    if (score > highScore) {
+      highScore = score;
+      document.querySelector('.highscore').textContent = highScore;
     }
 
-    // When input is lower
-  } else if (guess < secretNumber) {
+    // When guess is wrong
+  } else if (guess !== secretNumber) {
     if (score > 1) {
-      document.querySelector('.message').textContent = 'Too low!';
+      displayMessage(guess > secretNumber ? 'Too high!' : 'Too low!');
       score--;
-      document.querySelector('.score').textContent = score;
+      displayScore(score);
     } else {
-      document.querySelector('.message').textContent = 'You lost the game!';
-      document.querySelector('.score').textContent = 0;
+      displayMessage('You lost the game!');
+      displayScore(0);
     }
   }
 }); //Event handler is the function inside the listener.
 
+// Again functionality
 document.querySelector('.again').addEventListener('click', function () {
   score = 20;
   secretNumber = Math.trunc(Math.random() * 20) + 1;
-  document.querySelector('.message').textContent = 'Start guessing...';
+  displayMessage('Start guessing...');
   document.querySelector('.guess').value = '';
-  document.querySelector('.score').textContent = score;
-  document.querySelector('.number').textContent = '?';
+  displayScore(score);
+  displayNumber('?');
 
-  document.querySelector('body').style.backgroundColor = '#222';
-  document.querySelector('.number').style.width = '15rem';
+  styleColorWidth('#222', '15rem');
 });
